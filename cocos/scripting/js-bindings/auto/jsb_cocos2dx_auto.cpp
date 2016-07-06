@@ -61352,6 +61352,61 @@ bool js_cocos2dx_TMXLayer_getTileGIDAt(JSContext *cx, uint32_t argc, jsval *vp)
     JS_ReportError(cx, "js_cocos2dx_TMXLayer_getTileGIDAt : wrong number of arguments: %d, was expecting %d", argc, 1);
     return false;
 }
+bool js_cocos2dx_TMXLayer_getTileBaseGIDAt(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    bool ok = true;
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    cocos2d::TMXLayer* cobj = (cocos2d::TMXLayer *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_cocos2dx_TMXLayer_getTileBaseGIDAt : Invalid Native Object");
+    if (argc == 1) {
+        cocos2d::Vec2 arg0;
+        ok &= jsval_to_vector2(cx, args.get(0), &arg0);
+        JSB_PRECONDITION2(ok, cx, false, "js_cocos2dx_TMXLayer_getTileBaseGIDAt : Error processing arguments");
+        int ret = cobj->getTileBaseGIDAt(arg0);
+        jsval jsret = JSVAL_NULL;
+        jsret = int32_to_jsval(cx, ret);
+        args.rval().set(jsret);
+        return true;
+    }
+    if (argc == 2) {
+        cocos2d::Vec2 arg0;
+        cocos2d::TMXTileFlags_* arg1 = nullptr;
+        ok &= jsval_to_vector2(cx, args.get(0), &arg0);
+        uint32_t tempData;arg1=(cocos2d::TMXTileFlags_*)&tempData;ok &= jsval_to_uint32(cx, args.get(1), (uint32_t *)&arg1);
+        JSB_PRECONDITION2(ok, cx, false, "js_cocos2dx_TMXLayer_getTileBaseGIDAt : Error processing arguments");
+        int ret = cobj->getTileBaseGIDAt(arg0, arg1);
+        jsval jsret = JSVAL_NULL;
+        jsret = int32_to_jsval(cx, ret);
+        args.rval().set(jsret);
+        return true;
+    }
+    
+    JS_ReportError(cx, "js_cocos2dx_TMXLayer_getTileBaseGIDAt : wrong number of arguments: %d, was expecting %d", argc, 1);
+    return false;
+}
+bool js_cocos2dx_TMXLayer_showTilesBeyond(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    bool ok = true;
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    cocos2d::TMXLayer* cobj = (cocos2d::TMXLayer *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_cocos2dx_TMXLayer_showTilesBeyond : Invalid Native Object");
+    if (argc == 2) {
+        cocos2d::Vec2 arg0;
+        int arg1 = 0;
+        ok &= jsval_to_vector2(cx, args.get(0), &arg0);
+        ok &= jsval_to_int32(cx, args.get(1), (int32_t *)&arg1);
+        JSB_PRECONDITION2(ok, cx, false, "js_cocos2dx_TMXLayer_showTilesBeyond : Error processing arguments");
+        cobj->showTilesBeyond(arg0, arg1);
+        args.rval().setUndefined();
+        return true;
+    }
+    JS_ReportError(cx, "js_cocos2dx_TMXLayer_showTilesBeyond : wrong number of arguments: %d, was expecting %d", argc, 1);
+    return false;
+}
 bool js_cocos2dx_TMXLayer_getTexture(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -62012,6 +62067,8 @@ void js_register_cocos2dx_TMXLayer(JSContext *cx, JS::HandleObject global) {
 
     static JSFunctionSpec funcs[] = {
         JS_FN("getTileGIDAt", js_cocos2dx_TMXLayer_getTileGIDAt, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("getTileBaseGIDAt", js_cocos2dx_TMXLayer_getTileBaseGIDAt, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("showTilesBeyond", js_cocos2dx_TMXLayer_showTilesBeyond, 2, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getTexture", js_cocos2dx_TMXLayer_getTexture, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getPositionAt", js_cocos2dx_TMXLayer_getPositionAt, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("setLayerOrientation", js_cocos2dx_TMXLayer_setLayerOrientation, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),

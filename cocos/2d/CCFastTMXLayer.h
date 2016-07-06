@@ -100,6 +100,13 @@ public:
      * @return The tile gid at a given tile coordinate. It also returns the tile flags.
      */
     int getTileGIDAt(const Vec2& tileCoordinate, TMXTileFlags* flags = nullptr);
+    /** 取得格子的原始gid
+     *
+     * @param tileCoordinate The tile coordinate.
+     * @param flags A TMXTileFlags.
+     * @return The tile gid at a given tile coordinate. It also returns the tile flags.
+     */
+    int getTileBaseGIDAt(const Vec2& tileCoordinate, TMXTileFlags* flags = nullptr);
 
     /** Sets the tile gid (gid = tile global id) at a given tile coordinate.
      * The Tile GID can be obtained by using the method "tileGIDAt" or by using the TMX editor -> Tileset Mgr +1.
@@ -125,7 +132,17 @@ public:
      * @param tileCoordinate The tile Coordinate.
      */
     void removeTileAt(const Vec2& tileCoordinate);
-
+    
+    /** showTiles a tile at given tile coordinate.
+     *
+     * @param tileCoordinate The tile Coordinate.
+     */
+    void showTilesBeyond(const Vec2& tileCoordinate, int distance);
+    /** showTiles a tile at given tile coordinate.
+     *
+     * @param tileCoordinate The tile Coordinate.
+     */
+    void removeTilesAway(const Vec2& tileCoordinate, int distance);
     /** Returns the position in points of a given tile coordinate.
      *
      * @param tileCoordinate The tile Coordinate.
@@ -184,13 +201,13 @@ public:
      * @lua NA
      * @return The pointer to the map of tiles.
      */
-    const uint32_t* getTiles() const { return _tiles; };
+    const uint32_t* getTiles() const { return _baseTiles; };
 
     /** Set the pointer to the map of tiles.
      *
      * @param tiles The pointer to the map of tiles.
      */
-    void setTiles(uint32_t* tiles) { _tiles = tiles; _quadsDirty = true;};
+    void setTiles(uint32_t* tiles) { _baseTiles = tiles; _quadsDirty = true;};
 
     /** Tileset information for the layer.
      *
@@ -287,7 +304,8 @@ protected:
 
     //Flip flags is packed into gid
     void setFlaggedTileGIDByIndex(int index, int gid);
-
+    //Flip flags is packed into gid
+    void removeFlaggedTileGIDByIndex(int index);
     //
     void updateTotalQuads();
 
@@ -307,7 +325,11 @@ protected:
     /** size of the map's tile (could be different from the tile's size) */
     Size _mapTileSize;
     /** pointer to the map of tiles */
-    uint32_t* _tiles;
+//    uint32_t* _tiles;
+    std::map<int/*index*/, int/*gid*/> _tiles;
+
+    /** pointer to the map of _baseTiles */
+    uint32_t* _baseTiles;
     /** Tileset information for the layer */
     TMXTilesetInfo* _tileSet;
     /** Layer orientation, which is the same as the map orientation */
@@ -324,6 +346,7 @@ protected:
 
     Size _screenGridSize;
     Rect _screenGridRect;
+    int visibleTileNum;
     int _screenTileCount;
 
     int _vertexZvalue;
@@ -333,9 +356,12 @@ protected:
     Mat4 _tileToNodeTransform;
     /** data for rendering */
     bool _quadsDirty;
-    std::vector<int> _tileToQuadIndex;
+//    std::vector<int> _tileToQuadIndex;
+    std::map<int, int> _tileToQuadIndex;
     std::vector<V3F_C4B_T2F_Quad> _totalQuads;
+//    std::map<int, V3F_C4B_T2F_Quad> _totalQuads;
     std::vector<GLushort> _indices;
+//    std::map<int, GLushort> _indices;
     std::map<int/*vertexZ*/, int/*offset to _indices by quads*/> _indicesVertexZOffsets;
     std::unordered_map<int/*vertexZ*/, int/*number to quads*/> _indicesVertexZNumber;
     std::vector<PrimitiveCommand> _renderCommands;
