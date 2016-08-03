@@ -60300,6 +60300,8 @@ bool js_cocos2dx_TMXMapInfo_setTileSize(JSContext *cx, uint32_t argc, jsval *vp)
     JS_ReportError(cx, "js_cocos2dx_TMXMapInfo_setTileSize : wrong number of arguments: %d, was expecting %d", argc, 1);
     return false;
 }
+
+
 bool js_cocos2dx_TMXMapInfo_initWithTMXFile(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -61308,6 +61310,7 @@ bool js_cocos2dx_TMXLayer_getTileBaseGIDAt(JSContext *cx, uint32_t argc, jsval *
     JS_ReportError(cx, "js_cocos2dx_TMXLayer_getTileBaseGIDAt : wrong number of arguments: %d, was expecting %d", argc, 1);
     return false;
 }
+
 bool js_cocos2dx_TMXLayer_showTilesBeyond(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -61327,6 +61330,27 @@ bool js_cocos2dx_TMXLayer_showTilesBeyond(JSContext *cx, uint32_t argc, jsval *v
         return true;
     }
     JS_ReportError(cx, "js_cocos2dx_TMXLayer_showTilesBeyond : wrong number of arguments: %d, was expecting %d", argc, 1);
+    return false;
+}
+//edit by yangzhu
+bool js_cocos2dx_TMXLayer_setTiles(JSContext *cx, uint32_t argc, jsval *vp)
+{
+//    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+//    bool ok = true;
+//    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+//    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+//    cocos2d::TMXLayer* cobj = (cocos2d::TMXLayer *)(proxy ? proxy->ptr : NULL);
+//    JSB_PRECONDITION2( cobj, cx, false, "js_cocos2dx_TMXLayer_setTiles : Invalid Native Object");
+//    if (argc == 1) {
+//        std::string arg0;
+//        ok &= jsval_to_std_string(cx, args.get(0), &arg0);
+//        JSB_PRECONDITION2(ok, cx, false, "js_cocos2dx_TMXLayer_setTiles : Error processing arguments");
+//        cobj->setTiles(arg0);
+//        args.rval().setUndefined();
+//        return true;
+//    }
+//    
+//    JS_ReportError(cx, "js_cocos2dx_TMXLayer_setTiles : wrong number of arguments: %d, was expecting %d", argc, 1);
     return false;
 }
 
@@ -61935,8 +61959,8 @@ void js_register_cocos2dx_TMXLayer(JSContext *cx, JS::HandleObject global) {
     static JSFunctionSpec funcs[] = {
         JS_FN("getTileGIDAt", js_cocos2dx_TMXLayer_getTileGIDAt, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getTileBaseGIDAt", js_cocos2dx_TMXLayer_getTileBaseGIDAt, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("setTiles", js_cocos2dx_TMXLayer_setTiles, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("showTilesBeyond", js_cocos2dx_TMXLayer_showTilesBeyond, 2, JSPROP_PERMANENT | JSPROP_ENUMERATE),
-        JS_FN("getTexture", js_cocos2dx_TMXLayer_getTexture, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getPositionAt", js_cocos2dx_TMXLayer_getPositionAt, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("setLayerOrientation", js_cocos2dx_TMXLayer_setLayerOrientation, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("releaseMap", js_cocos2dx_TMXLayer_releaseMap, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
@@ -62065,6 +62089,48 @@ bool js_cocos2dx_TMXTiledMap_setMapSize(JSContext *cx, uint32_t argc, jsval *vp)
     JS_ReportError(cx, "js_cocos2dx_TMXTiledMap_setMapSize : wrong number of arguments: %d, was expecting %d", argc, 1);
     return false;
 }
+
+bool js_cocos2dx_TMXTiledMap_setTilesSource(JSContext *cx, uint32_t argc, jsval *vp)
+{
+//    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+//    bool ok = true;
+//    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+//    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+//    cocos2d::TMXTiledMap* cobj = (cocos2d::TMXTiledMap *)(proxy ? proxy->ptr : NULL);
+//    JSB_PRECONDITION2( cobj, cx, false, "js_cocos2dx_TMXTiledMap_setMapSize : Invalid Native Object");
+//    if (argc == 1) {
+//        cocos2d::Size arg0;
+//        ok &= jsval_to_ccsize(cx, args.get(0), &arg0);
+//        JSB_PRECONDITION2(ok, cx, false, "js_cocos2dx_TMXTiledMap_setMapSize : Error processing arguments");
+//        cobj->setMapSize(arg0);
+//        args.rval().setUndefined();
+//        return true;
+//    }
+//    
+//    JS_ReportError(cx, "js_cocos2dx_TMXTiledMap_setMapSize : wrong number of arguments: %d, was expecting %d", argc, 1);
+//    return false;
+    
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    bool ok = true;
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    cocos2d::TMXTiledMap* cobj = (cocos2d::TMXTiledMap *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_cocos2dx_TMXLayer_setTiles : Invalid Native Object");
+    if (argc == 1) {
+        std::string arg0;
+        ok &= jsval_to_std_string(cx, args.get(0), &arg0);
+        JSB_PRECONDITION2(ok, cx, false, "js_cocos2dx_TMXLayer_setTiles : Error processing arguments");
+        cobj->setTilesSource(arg0);
+        args.rval().setUndefined();
+        return true;
+    }
+    
+    JS_ReportError(cx, "js_cocos2dx_TMXLayer_setTiles : wrong number of arguments: %d, was expecting %d", argc, 1);
+    return false;
+    
+    
+}
+
 bool js_cocos2dx_TMXTiledMap_getObjectGroup(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -62527,6 +62593,7 @@ void js_register_cocos2dx_TMXTiledMap(JSContext *cx, JS::HandleObject global) {
         JS_FN("getProperty", js_cocos2dx_TMXTiledMap_getProperty, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getLayerNum", js_cocos2dx_TMXTiledMap_getLayerNum, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("setMapSize", js_cocos2dx_TMXTiledMap_setMapSize, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("setTilesSource", js_cocos2dx_TMXTiledMap_setTilesSource, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getObjectGroup", js_cocos2dx_TMXTiledMap_getObjectGroup, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getObjectGroups", js_cocos2dx_TMXTiledMap_getObjectGroups, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getResourceFile", js_cocos2dx_TMXTiledMap_getResourceFile, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),

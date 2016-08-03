@@ -208,6 +208,9 @@ public:
      */
     inline const Size& getMapSize() const { return _mapSize; };
     
+    void setTilesSource(const std::string &json);
+    uint32_t *readSource(const std::string &fileName);
+    
     /** Set the map's size property measured in tiles. 
      *
      * @param mapSize The map's size property measured in tiles.
@@ -307,7 +310,9 @@ protected:
     Vector<TMXObjectGroup*> _objectGroups;
     /** properties */
     ValueMap _properties;
-    
+    /*当前在内存中的分布地图索引*/
+//    std::map<int, bool> _currentShardMapIndex;
+    int _currentShardMapIndexs[4] = {-1,-1,-1,-1};    // 定义一个整型数组
     //! tile properties
     ValueMapIntKey _tileProperties;
 

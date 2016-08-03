@@ -208,7 +208,7 @@ public:
      *
      * @param tiles The pointer to the map of tiles.
      */
-    void setTiles(uint32_t* tiles) { _baseTiles = tiles; _quadsDirty = true;};
+    void setTiles(std::string *json) {};
 
     /** Tileset information for the layer.
      *

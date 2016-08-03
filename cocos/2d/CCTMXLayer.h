@@ -30,6 +30,11 @@ THE SOFTWARE.
 #include "2d/CCSpriteBatchNode.h"
 #include "2d/CCTMXXMLParser.h"
 #include "base/ccCArray.h"
+//#include "json/rapidjson.h"
+#include "json/document.h"
+#include "json/stringbuffer.h"
+#include "json/writer.h"
+
 NS_CC_BEGIN
 
 class TMXMapInfo;
@@ -128,6 +133,24 @@ public:
     CC_DEPRECATED_ATTRIBUTE uint32_t tileGIDAt(const Vec2& tileCoordinate, TMXTileFlags* flags = nullptr){
         return getTileGIDAt(tileCoordinate, flags);
     };
+    
+    /** 取得格子的原始gid
+     *
+     * @param tileCoordinate The tile coordinate.
+     * @param flags A TMXTileFlags.
+     * @return The tile gid at a given tile coordinate. It also returns the tile flags.
+     */
+    int getTileBaseGIDAt(const Vec2& tileCoordinate, TMXTileFlags* flags = nullptr);
+    /** showTiles a tile at given tile coordinate.
+     *
+     * @param tileCoordinate The tile Coordinate.
+     */
+    void showTilesBeyond(const Vec2& tileCoordinate, int distance);
+    /** removeTilesAway a tile at given tile coordinate.
+     *
+     * @param tileCoordinate The tile Coordinate.
+     */
+    void removeTilesAway(const Vec2& tileCoordinate, int distance);
 
     /** Sets the tile gid (gid = tile global id) at a given tile coordinate.
      * The Tile GID can be obtained by using the method "tileGIDAt" or by using the TMX editor -> Tileset Mgr +1.
@@ -222,15 +245,23 @@ public:
      * @lua NA
      * @return Pointer to the map of tiles.
      */
-    uint32_t* getTiles() const { return _tiles; };
+    uint32_t* getTiles() const { return _baseTiles; };
     
     /** Set a pointer to the map of tiles.
-     *
+     *  设置分片的tiles
      * @param tiles A pointer to the map of tiles.
      */
-    void setTiles(uint32_t* tiles) { _tiles = tiles; };
-    
-    /** Tileset information for the layer. 
+    void setTiles( std::string *json);
+    /** Set a pointer to the map of tiles.
+     *  设置分片地图的的tiles
+     * @param tiles A pointer to the map of tiles.
+     */
+    void setShardMapTiles(int index, uint32_t *mapTiles);
+    /**
+     *  移除分片地图
+     */
+    void dropShardMapTiles(int index);
+    /** Tileset information for the layer.
      *
      * @return Tileset information for the layer.
      */
@@ -336,8 +367,18 @@ protected:
     Size _layerSize;
     /** size of the map's tile (could be different from the tile's size) */
     Size _mapTileSize;
-    /** pointer to the map of tiles */
-    uint32_t* _tiles;
+    //    uint32_t* _tiles;
+    std::map<int/*index*/, int/*gid*/> _tiles;
+    
+    /** pointer to the map of _baseTiles */
+    uint32_t* _baseTiles;
+    std::map<int, uint32_t*> _tilesMap;
+    
+    //js传递来设置的格子
+    std::map<long, int> s_tiles;
+    //每次传递需要删除的格子
+    std::vector<long> s_dels;
+    
     /** Tileset information for the layer */
     TMXTilesetInfo* _tileSet;
     /** Layer orientation, which is the same as the map orientation */

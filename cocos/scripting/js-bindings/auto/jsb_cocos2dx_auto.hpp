@@ -3673,6 +3673,7 @@ bool js_cocos2dx_TMXMapInfo_setStoringCharacters(JSContext *cx, uint32_t argc, j
 bool js_cocos2dx_TMXMapInfo_setStaggerAxis(JSContext *cx, uint32_t argc, jsval *vp);
 bool js_cocos2dx_TMXMapInfo_getMapSize(JSContext *cx, uint32_t argc, jsval *vp);
 bool js_cocos2dx_TMXMapInfo_setTilesets(JSContext *cx, uint32_t argc, jsval *vp);
+bool js_cocos2dx_TMXTiledMap_setTilesSource(JSContext *cx, uint32_t argc, jsval *vp);
 bool js_cocos2dx_TMXMapInfo_getProperties(JSContext *cx, uint32_t argc, jsval *vp);
 bool js_cocos2dx_TMXMapInfo_getStaggerIndex(JSContext *cx, uint32_t argc, jsval *vp);
 bool js_cocos2dx_TMXMapInfo_setLayerAttribs(JSContext *cx, uint32_t argc, jsval *vp);
@@ -3689,8 +3690,8 @@ void js_register_cocos2dx_TMXLayer(JSContext *cx, JS::HandleObject global);
 void register_all_cocos2dx(JSContext* cx, JS::HandleObject obj);
 bool js_cocos2dx_TMXLayer_getTileGIDAt(JSContext *cx, uint32_t argc, jsval *vp);
 bool js_cocos2dx_TMXLayer_getTileBaseGIDAt(JSContext *cx, uint32_t argc, jsval *vp);
+bool js_cocos2dx_TMXLayer_setTiles(JSContext *cx, uint32_t argc, jsval *vp);
 bool js_cocos2dx_TMXLayer_showTilesBeyond(JSContext *cx, uint32_t argc, jsval *vp);
-bool js_cocos2dx_TMXLayer_getTexture(JSContext *cx, uint32_t argc, jsval *vp);
 
 bool js_cocos2dx_TMXLayer_getPositionAt(JSContext *cx, uint32_t argc, jsval *vp);
 bool js_cocos2dx_TMXLayer_setLayerOrientation(JSContext *cx, uint32_t argc, jsval *vp);

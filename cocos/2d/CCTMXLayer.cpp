@@ -33,7 +33,6 @@ THE SOFTWARE.
 #include "renderer/CCTextureCache.h"
 #include "renderer/CCGLProgram.h"
 #include "base/CCString.h"
-
 NS_CC_BEGIN
 
 
@@ -55,7 +54,9 @@ bool TMXLayer::initWithTilesetInfo(TMXTilesetInfo *tilesetInfo, TMXLayerInfo *la
     // FIXME:: is 35% a good estimate ?
     Size size = layerInfo->_layerSize;
     float totalNumberOfTiles = size.width * size.height;
-    float capacity = totalNumberOfTiles * 0.35f + 1; // 35 percent is occupied ?
+//    totalNumberOfTiles = 500;
+//    float capacity = totalNumberOfTiles * 0.35f + 1; // 35 percent is occupied ?
+    float capacity = 300; // 35 percent is occupied ?
 
     Texture2D *texture = nullptr;
     if( tilesetInfo )
@@ -70,8 +71,8 @@ bool TMXLayer::initWithTilesetInfo(TMXTilesetInfo *tilesetInfo, TMXLayerInfo *la
     {
         // layerInfo
         _layerName = layerInfo->_name;
-        _layerSize = size;
-        _tiles = layerInfo->_tiles;
+        _layerSize = Size(1500, 1500);
+        _baseTiles = layerInfo->_tiles;
         _opacity = layerInfo->_opacity;
         setProperties(layerInfo->getProperties());
         _contentScaleFactor = Director::getInstance()->getContentScaleFactor(); 
@@ -113,7 +114,7 @@ TMXLayer::TMXLayer()
 ,_contentScaleFactor(1.0f)
 ,_layerSize(Size::ZERO)
 ,_mapTileSize(Size::ZERO)
-,_tiles(nullptr)
+,_baseTiles(nullptr)
 ,_tileSet(nullptr)
 ,_layerOrientation(TMXOrientationOrtho)
 ,_staggerAxis(TMXStaggerAxis_Y)
@@ -132,15 +133,15 @@ TMXLayer::~TMXLayer()
         _atlasIndexArray = nullptr;
     }
 
-    CC_SAFE_DELETE_ARRAY(_tiles);
+    CC_SAFE_DELETE_ARRAY(_baseTiles);
 }
 
 void TMXLayer::releaseMap()
 {
-    if (_tiles)
+    if (_baseTiles)
     {
-        delete [] _tiles;
-        _tiles = nullptr;
+        delete [] _baseTiles;
+        _baseTiles = nullptr;
     }
 
     if (_atlasIndexArray)
@@ -148,6 +149,79 @@ void TMXLayer::releaseMap()
         ccCArrayFree(_atlasIndexArray);
         _atlasIndexArray = nullptr;
     }
+}
+
+void TMXLayer::setShardMapTiles(int index, uint32_t *tiles){
+    _tilesMap[index] = tiles;
+}
+/**
+ *释放暂时用不着的内存
+ */
+void TMXLayer::dropShardMapTiles(int index)
+{
+    auto it = _tilesMap.find(index);
+    if (it != _tilesMap.end())
+    {
+        uint32_t *_mapTiles = it->second;
+        delete [] _mapTiles;
+        _mapTiles = nullptr;
+        _tilesMap.erase(it);
+    }
+}
+/**
+ *设置格子
+ */
+void TMXLayer::setTiles(std::string *json){
+//    CCLOGERROR("setTiles :%s", json.c_str());
+//    Document m_doc;
+//    rapidjson::Document _doc;
+//    _doc.Parse<0>(json.c_str());
+//    if (_doc.HasParseError()){
+//        CCLOG("GetParaseError:  %u\n",_doc.GetParseError());
+//    }
+//    s_tiles.clear();
+//    s_dels.clear();
+//    //将rapidjson转换成stdmap 便于后期查找
+//    for(auto iter = _doc.MemberBegin(); iter != _doc.MemberEnd(); ++iter)
+//    {
+//        auto _z = (iter->name).GetString();
+//        int gid = (iter->value).GetInt();
+//        int z = std::stoi( _z );
+//        s_tiles[z] = gid;
+//    }
+//    //渲染计算出需删除的格子
+//    s_dels.resize(_tiles.size());
+//    for(auto it = _tiles.begin(); it != _tiles.end(); ++it)
+//    {
+//        long z = it->first;
+//        auto _it = s_tiles.find(z);
+//        if (_it == s_tiles.end())
+//        {
+//            long len = s_dels.size();
+//            s_dels[len] = z;
+//        }
+//    }
+//    //设置格子
+//    for(auto it = s_tiles.begin(); it != s_tiles.end(); ++it)
+//    {
+//        long z = it->first;
+//        int gid = s_tiles[z];
+//        int _x = z % int(_layerSize.width);
+//        int _y = z / int(_layerSize.width);
+//        setTileGID(gid, Vec2(_x, _y));
+//    }
+//    //删除格式
+//    size_t len = s_dels.size();
+//    for (int i = 0; i < len; i ++) {
+//        long z = s_dels[i];
+//        int _x = z % int(_layerSize.width);
+//        int _y = z / int(_layerSize.width);
+//        this->removeTileAt(Vec2(_x, _y));
+//    }
+//    s_dels.clear();
+//    s_tiles.clear();
+////    rapidjson::Document &doc
+    
 }
 
 // TMXLayer - setup Tiles
@@ -168,26 +242,26 @@ void TMXLayer::setupTiles()
     // Parse cocos2d properties
     this->parseInternalProperties();
 
-    for (int y=0; y < _layerSize.height; y++)
-    {
-        for (int x=0; x < _layerSize.width; x++)
-        {
-            int pos = static_cast<int>(x + _layerSize.width * y);
-            int gid = _tiles[ pos ];
-
-            // gid are stored in little endian.
-            // if host is big endian, then swap
-            //if( o == CFByteOrderBigEndian )
-            //    gid = CFSwapInt32( gid );
-            /* We support little endian.*/
-
-            // FIXME:: gid == 0 --> empty tile
-            if (gid != 0) 
-            {
-                this->appendTileForGID(gid, Vec2(x, y));
-            }
-        }
-    }
+//    for (int y=0; y < _layerSize.height; y++)
+//    {
+//        for (int x=0; x < _layerSize.width; x++)
+//        {
+//            int pos = static_cast<int>(x + _layerSize.width * y);
+//            int gid = _tiles[ pos ];
+//
+//            // gid are stored in little endian.
+//            // if host is big endian, then swap
+//            //if( o == CFByteOrderBigEndian )
+//            //    gid = CFSwapInt32( gid );
+//            /* We support little endian.*/
+//
+//            // FIXME:: gid == 0 --> empty tile
+//            if (gid != 0) 
+//            {
+//                this->appendTileForGID(gid, Vec2(x, y));
+//            }
+//        }
+//    }
 }
 
 // TMXLayer - Properties
@@ -316,7 +390,7 @@ Sprite* TMXLayer::reusedTileWithRect(const Rect& rect)
 Sprite * TMXLayer::getTileAt(const Vec2& pos)
 {
     CCASSERT(pos.x < _layerSize.width && pos.y < _layerSize.height && pos.x >=0 && pos.y >=0, "TMXLayer: invalid position");
-    CCASSERT(_tiles && _atlasIndexArray, "TMXLayer: the tiles map has been released");
+    CCASSERT(_atlasIndexArray, "TMXLayer: the tiles map has been released");
 
     Sprite *tile = nullptr;
     int gid = this->getTileGIDAt(pos);
@@ -351,19 +425,104 @@ Sprite * TMXLayer::getTileAt(const Vec2& pos)
 uint32_t TMXLayer::getTileGIDAt(const Vec2& pos, TMXTileFlags* flags/* = nullptr*/)
 {
     CCASSERT(pos.x < _layerSize.width && pos.y < _layerSize.height && pos.x >=0 && pos.y >=0, "TMXLayer: invalid position");
-    CCASSERT(_tiles && _atlasIndexArray, "TMXLayer: the tiles map has been released");
+    CCASSERT(_atlasIndexArray, "TMXLayer: the tiles map has been released");
 
-    ssize_t idx = static_cast<int>(((int) pos.x + (int) pos.y * _layerSize.width));
+    int idx = static_cast<int>(((int) pos.x + (int) pos.y * _layerSize.width));
     // Bits on the far end of the 32-bit global tile ID are used for tile flags
-    uint32_t tile = _tiles[idx];
+//    uint32_t tile = _tiles[idx];
+    auto it = _tiles.find(idx);
+    int tile = 0;
+    if (it != _tiles.end())
+    {
+        tile = it->second;
+    }
 
     // issue1264, flipped tiles can be changed dynamically
     if (flags) 
     {
         *flags = (TMXTileFlags)(tile & kTMXFlipedAll);
     }
+    uint32_t gid = tile & kTMXFlippedMask;
     
-    return (tile & kTMXFlippedMask);
+//    CCLOGERROR("getTileGIDAt :%d %d", tile, gid);
+
+    return gid;
+}
+
+int TMXLayer::getTileBaseGIDAt(const Vec2& tileCoordinate, TMXTileFlags* flags/* = nullptr*/)
+{
+    CCASSERT(tileCoordinate.x < _layerSize.width && tileCoordinate.y < _layerSize.height && tileCoordinate.x >=0 && tileCoordinate.y >=0, "TMXLayer: invalid position");
+    CCASSERT(_baseTiles, "TMXLayer: the tiles map has been released");
+    
+//    int idx = static_cast<int>(((int)tileCoordinate.x + (int)tileCoordinate.y * _layerSize.width));
+//    int mapIndex = idx / 22500;
+    int _x = (int)tileCoordinate.x % 150;
+    int _y = (int)tileCoordinate.y % 150;
+    int _mx = (int)tileCoordinate.x / 150;
+    int _my = (int)tileCoordinate.y /150;
+    int mapIndex = _mx + _my * 10;
+    int _idx = _x + _y * 150;
+    uint32_t *_mapTiles = _tilesMap[mapIndex];
+    if (!_mapTiles) return 0;
+    int tile = _mapTiles[_idx];
+//    if(_layerName.compare(std::string("land")) == 0) {
+//        log("x:%d y:%d gid:%d", _x, _y, tile);
+//    }
+    // Bits on the far end of the 32-bit global tile ID are used for tile flags
+//    int tile = _baseTiles[idx];
+    return tile & kTMXFlippedMask;
+    
+}
+
+void TMXLayer::showTilesBeyond(const cocos2d::Vec2 &tileCoordinate, int distance){
+//    CCLOGERROR("showTilesBeyond %s %f %f", _layerName.c_str(), tileCoordinate.x, tileCoordinate.y);
+
+    int _minX = tileCoordinate.x - distance;
+    int _maxX = tileCoordinate.x + distance;
+    int _minY = tileCoordinate.y - distance;
+    int _maxY = tileCoordinate.y + distance;
+    _minX = _minX < 0 ? 0 : _minX;
+    _maxX = _maxX > _layerSize.width - 1 ? _layerSize.width - 1 : _maxX;
+    _minY = _minY < 0 ? 0 : _minY;
+    _maxY = _maxY > _layerSize.height - 1 ? _layerSize.height - 1 : _maxY;
+    int _y;
+    int _x;
+    int _z;
+    int _gid;
+//    std::string _name = "bg";
+    for (_y = _minY; _y <= _maxY; _y++) {
+        for (_x = _minX; _x <= _maxX; _x++) {
+//            _z = _x + _layerSize.width * _y;
+            _gid = this->getTileBaseGIDAt(Vec2(_x, _y));
+    
+            
+            if (_layerName == "bg") _gid = 1;
+            if (0 != _gid) {
+                setTileGID(_gid, Vec2(_x, _y));
+            }
+        }
+    }
+    this->removeTilesAway(tileCoordinate, distance);
+//    CCLOGERROR("_tiles size :%s %lu", _layerName.c_str(), _tiles.size());
+}
+
+void TMXLayer::removeTilesAway(const Vec2& tileCoordinate, int distance) {
+    std::map<long, Vec2> _needRemoveMap;
+    for(auto it = _tiles.begin(); it != _tiles.end(); ++it)
+    {
+        long tileIndex = it->first;
+        int _x = tileIndex % int(_layerSize.width);
+        int _y = tileIndex / int(_layerSize.width);
+        if (std::abs(_x - tileCoordinate.x) > distance || std::abs(_y - tileCoordinate.y) > distance) {
+            _needRemoveMap[tileIndex] = Vec2(_x, _y);
+        }
+    }
+    for(auto it = _needRemoveMap.begin(); it != _needRemoveMap.end();++it)
+    {
+        this->removeTileAt(it->second);
+    }
+    _needRemoveMap.clear();
+    
 }
 
 // TMXLayer - adding helper methods
@@ -399,7 +558,6 @@ Sprite * TMXLayer::insertTileForGID(uint32_t gid, const Vec2& pos)
                 sp->setAtlasIndex(ai+1);
             }
         }
-        
         _tiles[z] = gid;
         return tile;
     }
@@ -501,13 +659,13 @@ void TMXLayer::setTileGID(uint32_t gid, const Vec2& pos)
 void TMXLayer::setTileGID(uint32_t gid, const Vec2& pos, TMXTileFlags flags)
 {
     CCASSERT(pos.x < _layerSize.width && pos.y < _layerSize.height && pos.x >=0 && pos.y >=0, "TMXLayer: invalid position");
-    CCASSERT(_tiles && _atlasIndexArray, "TMXLayer: the tiles map has been released");
+    CCASSERT(_atlasIndexArray, "TMXLayer: the tiles map has been released");
     CCASSERT(gid == 0 || (int)gid >= _tileSet->_firstGid, "TMXLayer: invalid gid" );
 
     TMXTileFlags currentFlags;
     uint32_t currentGID = getTileGIDAt(pos, &currentFlags);
 
-    if (currentGID != gid || currentFlags != flags) 
+    if (currentGID != gid || currentFlags != flags)
     {
         uint32_t gidAndFlags = gid | flags;
 
@@ -566,8 +724,8 @@ void TMXLayer::removeChild(Node* node, bool cleanup)
     CCASSERT(_children.contains(sprite), "Tile does not belong to TMXLayer");
 
     ssize_t atlasIndex = sprite->getAtlasIndex();
-    ssize_t zz = (ssize_t)_atlasIndexArray->arr[atlasIndex];
-    _tiles[zz] = 0;
+//    ssize_t zz = (ssize_t)_atlasIndexArray->arr[atlasIndex];
+//    _tiles[zz] = 0;
     ccCArrayRemoveValueAtIndex(_atlasIndexArray, atlasIndex);
     SpriteBatchNode::removeChild(sprite, cleanup);
 }
@@ -575,17 +733,22 @@ void TMXLayer::removeChild(Node* node, bool cleanup)
 void TMXLayer::removeTileAt(const Vec2& pos)
 {
     CCASSERT(pos.x < _layerSize.width && pos.y < _layerSize.height && pos.x >=0 && pos.y >=0, "TMXLayer: invalid position");
-    CCASSERT(_tiles && _atlasIndexArray, "TMXLayer: the tiles map has been released");
+    CCASSERT(_atlasIndexArray, "TMXLayer: the tiles map has been released");
 
     int gid = getTileGIDAt(pos);
-
-    if (gid) 
+//    CCLOGERROR("removeTileAt :%s %d", _layerName.c_str(), gid);
+    if (gid != 0)
     {
         int z = pos.x + pos.y * _layerSize.width;
         ssize_t atlasIndex = atlasIndexForExistantZ(z);
 
         // remove tile from GID map
-        _tiles[z] = 0;
+//        _tiles[z] = 0;
+        auto it = _tiles.find(z);
+        if (it != _tiles.end())
+        {
+            _tiles.erase(it);
+        }
 
         // remove tile from atlas position array
         ccCArrayRemoveValueAtIndex(_atlasIndexArray, atlasIndex);
