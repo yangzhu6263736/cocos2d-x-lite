@@ -58747,9 +58747,7 @@ bool js_cocos2dx_TMXLayer_setLayerOrientation(JSContext *cx, uint32_t argc, jsva
     JS_ReportError(cx, "js_cocos2dx_TMXLayer_setLayerOrientation : wrong number of arguments: %d, was expecting %d", argc, 1);
     return false;
 }
-<<<<<<< HEAD
 
-=======
 bool js_cocos2dx_TMXLayer_setTileOpacity(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -58770,7 +58768,6 @@ bool js_cocos2dx_TMXLayer_setTileOpacity(JSContext *cx, uint32_t argc, jsval *vp
     JS_ReportError(cx, "js_cocos2dx_TMXLayer_setTileOpacity : wrong number of arguments: %d, was expecting %d", argc, 1);
     return false;
 }
->>>>>>> cocos-creator/develop
 bool js_cocos2dx_TMXLayer_releaseMap(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);

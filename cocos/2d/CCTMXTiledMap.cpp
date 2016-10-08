@@ -29,14 +29,10 @@ THE SOFTWARE.
 #include "2d/CCTMXLayer.h"
 #include "2d/CCSprite.h"
 #include "base/ccUTF8.h"
-<<<<<<< HEAD
-#include "base/CCString.h"
 #include "base/ZipUtils.h"
 #include "base/base64.h"
 #include "platform/CCFileUtils.h"
-=======
 
->>>>>>> cocos-creator/develop
 NS_CC_BEGIN
 
 // implementation TMXTiledMap

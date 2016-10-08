@@ -147,13 +147,7 @@ void TMXLayer::draw(Renderer *renderer, const Mat4& transform, uint32_t flags)
 
     if( flags != 0 || _dirty || _quadsDirty )
     {
-<<<<<<< HEAD
-//        CCLOGERROR("draw2");
-
-        Size s = _director->getWinSize();
-=======
         Size s = Director::getInstance()->getVisibleSize();
->>>>>>> cocos-creator/develop
         auto rect = Rect(0, 0, s.width, s.height);
 
         Mat4 inv = transform;

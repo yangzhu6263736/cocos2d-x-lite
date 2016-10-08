@@ -32,11 +32,7 @@ THE SOFTWARE.
 #include "base/ccUTF8.h"
 #include "renderer/CCTextureCache.h"
 #include "renderer/CCGLProgram.h"
-<<<<<<< HEAD
-#include "base/CCString.h"
-=======
 
->>>>>>> cocos-creator/develop
 NS_CC_BEGIN
 
 
