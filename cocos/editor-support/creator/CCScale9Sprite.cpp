@@ -32,6 +32,7 @@
 #include "renderer/ccShaders.h"
 
 namespace creator {
+    using namespace cocos2d;
     
 class simpleQuadGenerator
 {
@@ -115,20 +116,23 @@ public:
         //uv computation should take spritesheet into account.
         float u0, u3;
         float v0, v3;
-        
+        float texStrech = 0;
+#if CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL
+        texStrech = 0.5;
+#endif
         if (spriteFrame->isRotated()) {
-            u0 = textureRect.origin.x / atlasWidth;
-            u3 = (textureRect.origin.x + textureRect.size.height) / atlasWidth;
+            u0 = (textureRect.origin.x + texStrech) / atlasWidth;
+            u3 = (textureRect.origin.x + textureRect.size.height - texStrech) / atlasWidth;
             
-            v0 = textureRect.origin.y / atlasHeight;
-            v3 = (textureRect.origin.y + textureRect.size.width) / atlasHeight;
+            v0 = (textureRect.origin.y + texStrech) / atlasHeight;
+            v3 = (textureRect.origin.y + textureRect.size.width - texStrech) / atlasHeight;
         }
         else {
-            u0 = textureRect.origin.x / atlasWidth;
-            u3 = (textureRect.origin.x + textureRect.size.width) / atlasWidth;
+            u0 = (textureRect.origin.x + texStrech) / atlasWidth;
+            u3 = (textureRect.origin.x + textureRect.size.width - texStrech) / atlasWidth;
             
-            v0 = textureRect.origin.y / atlasHeight;
-            v3 = (textureRect.origin.y + textureRect.size.height) / atlasHeight;
+            v0 = (textureRect.origin.y + texStrech) / atlasHeight;
+            v3 = (textureRect.origin.y + textureRect.size.height - texStrech) / atlasHeight;
         }
         
         std::vector<cocos2d::Vec2> uvCoordinates(2);
@@ -244,28 +248,32 @@ public:
         //uv computation should take spritesheet into account.
         float u0, u1, u2, u3;
         float v0, v1, v2, v3;
+        float texStrech = 0;
+#if CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL
+        texStrech = 0.5;
+#endif
         
         if (spriteFrame->isRotated()) {
-            u0 = textureRect.origin.x / atlasWidth;
+            u0 = (textureRect.origin.x + texStrech) / atlasWidth;
             u1 = (bottomHeight + textureRect.origin.x) / atlasWidth;
             u2 = (bottomHeight + centerHeight + textureRect.origin.x) / atlasWidth;
-            u3 = (textureRect.origin.x + textureRect.size.height) / atlasWidth;
+            u3 = (textureRect.origin.x + textureRect.size.height - texStrech) / atlasWidth;
             
-            v0 = textureRect.origin.y / atlasHeight;
+            v0 = (textureRect.origin.y + texStrech) / atlasHeight;
             v1 = (leftWidth + textureRect.origin.y) / atlasHeight;
             v2 = (leftWidth + centerWidth + textureRect.origin.y) / atlasHeight;
-            v3 = (textureRect.origin.y + textureRect.size.width) / atlasHeight;
+            v3 = (textureRect.origin.y + textureRect.size.width - texStrech) / atlasHeight;
         }
         else {
-            u0 = textureRect.origin.x / atlasWidth;
+            u0 = (textureRect.origin.x + texStrech) / atlasWidth;
             u1 = (leftWidth + textureRect.origin.x) / atlasWidth;
             u2 = (leftWidth + centerWidth + textureRect.origin.x) / atlasWidth;
-            u3 = (textureRect.origin.x + textureRect.size.width) / atlasWidth;
+            u3 = (textureRect.origin.x + textureRect.size.width - texStrech) / atlasWidth;
             
-            v0 = textureRect.origin.y / atlasHeight;
+            v0 = (textureRect.origin.y + texStrech) / atlasHeight;
             v1 = (topHeight + textureRect.origin.y) / atlasHeight;
             v2 = (topHeight + centerHeight + textureRect.origin.y) / atlasHeight;
-            v3 = (textureRect.origin.y + textureRect.size.height) / atlasHeight;
+            v3 = (textureRect.origin.y + textureRect.size.height - texStrech) / atlasHeight;
         }
         
         std::vector<cocos2d::Vec2> uvCoordinates(4);
@@ -343,19 +351,24 @@ public:
         float u0, u3;
         float v0, v3;
         
+        float texStrech = 0;
+#if CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL
+        texStrech = 0.5;
+#endif
+        
         if (spriteFrame->isRotated()) {
-            u0 = textureRect.origin.x / atlasWidth;
-            u3 = (textureRect.origin.x + textureRect.size.height) / atlasWidth;
+            u0 = (textureRect.origin.x + texStrech) / atlasWidth;
+            u3 = (textureRect.origin.x + textureRect.size.height - texStrech) / atlasWidth;
             
-            v0 = textureRect.origin.y / atlasHeight;
-            v3 = (textureRect.origin.y + textureRect.size.width) / atlasHeight;
+            v0 = (textureRect.origin.y + texStrech) / atlasHeight;
+            v3 = (textureRect.origin.y + textureRect.size.width - texStrech) / atlasHeight;
         }
         else {
-            u0 = textureRect.origin.x / atlasWidth;
-            u3 = (textureRect.origin.x + textureRect.size.width) / atlasWidth;
+            u0 = (textureRect.origin.x + texStrech)/ atlasWidth;
+            u3 = (textureRect.origin.x + textureRect.size.width - texStrech) / atlasWidth;
             
-            v0 = textureRect.origin.y / atlasHeight;
-            v3 = (textureRect.origin.y + textureRect.size.height) / atlasHeight;
+            v0 = (textureRect.origin.y + texStrech) / atlasHeight;
+            v3 = (textureRect.origin.y + textureRect.size.height - texStrech) / atlasHeight;
         }
         
         std::vector<cocos2d::Vec2> uvCoordinates(2);
@@ -496,19 +509,24 @@ public:
         float u0, u3;
         float v0, v3;
         
+        float texStrech = 0;
+#if CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL
+        texStrech = 0.5;
+#endif
+        
         if (spriteFrame->isRotated()) {
-            u0 = textureRect.origin.x / atlasWidth;
-            u3 = (textureRect.origin.x + textureRect.size.height) / atlasWidth;
+            u0 = (textureRect.origin.x + texStrech)/ atlasWidth;
+            u3 = (textureRect.origin.x + textureRect.size.height - texStrech) / atlasWidth;
             
-            v0 = textureRect.origin.y / atlasHeight;
-            v3 = (textureRect.origin.y + textureRect.size.width) / atlasHeight;
+            v0 = (textureRect.origin.y + texStrech) / atlasHeight;
+            v3 = (textureRect.origin.y + textureRect.size.width - texStrech) / atlasHeight;
         }
         else {
-            u0 = textureRect.origin.x / atlasWidth;
-            u3 = (textureRect.origin.x + textureRect.size.width) / atlasWidth;
+            u0 = (textureRect.origin.x + texStrech) / atlasWidth;
+            u3 = (textureRect.origin.x + textureRect.size.width - texStrech) / atlasWidth;
             
-            v0 = textureRect.origin.y / atlasHeight;
-            v3 = (textureRect.origin.y + textureRect.size.height) / atlasHeight;
+            v0 = (textureRect.origin.y + texStrech) / atlasHeight;
+            v3 = (textureRect.origin.y + textureRect.size.height - texStrech) / atlasHeight;
         }
         std::vector<cocos2d::Vec2> uvs(2);
         uvs[0] = cocos2d::Vec2(u0,v3);
@@ -826,19 +844,24 @@ public:
         float u0, u3;
         float v0, v3;
         
+        float texStrech = 0;
+#if CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL
+        texStrech = 0.5;
+#endif
+        
         if (spriteFrame->isRotated()) {
-            u0 = textureRect.origin.x / atlasWidth;
-            u3 = (textureRect.origin.x + textureRect.size.height) / atlasWidth;
+            u0 = (textureRect.origin.x + texStrech) / atlasWidth;
+            u3 = (textureRect.origin.x + textureRect.size.height - texStrech) / atlasWidth;
             
-            v0 = textureRect.origin.y / atlasHeight;
-            v3 = (textureRect.origin.y + textureRect.size.width) / atlasHeight;
+            v0 = (textureRect.origin.y + texStrech) / atlasHeight;
+            v3 = (textureRect.origin.y + textureRect.size.width - texStrech) / atlasHeight;
         }
         else {
-            u0 = textureRect.origin.x / atlasWidth;
-            u3 = (textureRect.origin.x + textureRect.size.width) / atlasWidth;
+            u0 = (textureRect.origin.x + texStrech) / atlasWidth;
+            u3 = (textureRect.origin.x + textureRect.size.width - texStrech) / atlasWidth;
             
-            v0 = textureRect.origin.y / atlasHeight;
-            v3 = (textureRect.origin.y + textureRect.size.height) / atlasHeight;
+            v0 = (textureRect.origin.y + texStrech) / atlasHeight;
+            v3 = (textureRect.origin.y + textureRect.size.height - texStrech) / atlasHeight;
         }
         
         this->_uvs[0].x = u0;
@@ -872,8 +895,8 @@ _fillStart(0),
 _fillRange(0),
 _needRebuildRenderCommand(true)
 {
-    this->setAnchorPoint(cocos2d::Vec2::ANCHOR_MIDDLE);
-    this->setGLProgramState(cocos2d::GLProgramState::getOrCreateWithGLProgramName(cocos2d::GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
+    this->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+    this->setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
 }
 
 Scale9SpriteV2::~Scale9SpriteV2() {
@@ -940,57 +963,16 @@ void Scale9SpriteV2::enableTrimmedContentSize(bool isTrimmed) {
 
 void Scale9SpriteV2::setState(State state) {
     this->_brightState = state;
-    auto programCache = cocos2d::GLProgramCache::getInstance();
-    if(!programCache) return;
-    if(Scale9SpriteV2::State::DISTORTION == state) {
-        cocos2d::GLProgram* distortionProgram(nullptr);
-            distortionProgram = programCache->getGLProgram(distortionProgramKey);
-            if(!distortionProgram) {
-                //TODO: add implementation;
-                std::string fShader = "";
-                fShader = fShader
-                + "varying vec4 v_fragmentColor; \n"
-                + "varying vec2 v_texCoord; \n"
-                + "uniform vec2 u_offset; \n"
-                + "uniform vec2 u_offset_tiling; \n"
-                + "const float PI = 3.14159265359;\n"
-                + "void main() \n"
-                + "{ \n"
-                + "float halfPI = 0.5 * PI;\n"
-                + "float maxFactor = sin(halfPI);\n"
-                + "vec2 uv = v_texCoord;\n"
-                + "vec2 xy = 2.0 * uv.xy - 1.0;\n"
-                + "float d = length(xy);\n"
-                + "if (d < (2.0-maxFactor)) {\n"
-                + "d = length(xy * maxFactor);\n"
-                + "float z = sqrt(1.0 - d * d);\n"
-                + " float r = atan(d, z) / PI;\n"
-                + "float phi = atan(xy.y, xy.x);\n"
-                + "uv.x = r * cos(phi) + 0.5;\n"
-                + "uv.y = r * sin(phi) + 0.5;\n"
-                + "} else {\n"
-                + "discard;\n"
-                + "}\n"
-                + "uv = uv * u_offset_tiling + u_offset;\n"
-                + "uv = fract(uv); \n"
-                + "gl_FragColor = v_fragmentColor * texture2D(CC_Texture0, uv);\n"
-                + "}";
-                
-                distortionProgram = cocos2d::GLProgram::createWithByteArrays(cocos2d::ccPositionTextureColor_noMVP_vert, fShader.c_str());
-                
-                distortionProgram->link();
-                programCache->addGLProgram(distortionProgram, distortionProgramKey);
-        }
-        
-        if(distortionProgram) {
-            auto glProgramState = cocos2d::GLProgramState::create(distortionProgram);
-            glProgramState->setUniformVec2("u_offset", this->_distortionOffset);
-            glProgramState->setUniformVec2("u_offset_tiling", this->_distortionTiling);
-            this->setGLProgramState(glProgramState);
-        }
+    
+    if(State::DISTORTION == state) {
+        auto glProgramState = GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_SPRITE_DISTORTION);
+        glProgramState->setUniformVec2("u_offset", this->_distortionOffset);
+        glProgramState->setUniformVec2("u_offset_tiling", this->_distortionTiling);
+        this->setGLProgramState(glProgramState);
+    } else if (State::GRAY == state) {
+        this->setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_GRAYSCALE));
     } else {
-        auto program = programCache->getGLProgram(cocos2d::GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP);
-        this->setGLProgram(program);
+        this->setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
     }
     
 
@@ -1157,16 +1139,16 @@ void Scale9SpriteV2::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &tran
         
     }
 
-	if (!_indices.empty() && !_verts.empty()) {
-		cocos2d::TrianglesCommand::Triangles triangles;
-		triangles.indices = &this->_indices[0];
-		triangles.verts = &this->_verts[0];
-		triangles.vertCount = this->_verts.size();
-		triangles.indexCount = this->_indices.size();
-		auto texture = this->_spriteFrame->getTexture();
-		this->_renderCommand.init(_globalZOrder, texture->getName(), _glProgramState, _blendFunc, triangles, transform, 0);
-		renderer->addCommand(&this->_renderCommand);
-	}
+    if (!_indices.empty() && !_verts.empty()) {
+        cocos2d::TrianglesCommand::Triangles triangles;
+        triangles.indices = &this->_indices[0];
+        triangles.verts = &this->_verts[0];
+        triangles.vertCount = (int)this->_verts.size();
+        triangles.indexCount = (int)this->_indices.size();
+        auto texture = this->_spriteFrame->getTexture();
+        this->_renderCommand.init(_globalZOrder, texture->getName(), _glProgramState, _blendFunc, triangles, transform, 0);
+        renderer->addCommand(&this->_renderCommand);
+    }
 
 }
     

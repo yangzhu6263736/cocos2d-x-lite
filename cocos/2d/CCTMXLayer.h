@@ -309,6 +309,13 @@ public:
     inline void setProperties(const ValueMap& properties) {
         _properties = properties;
     };
+
+    /**
+     * Set the opacity of all tiles
+     * @param opacity The new opacity value
+     */
+    void setTileOpacity(unsigned char opacity);
+
     //
     // Override
     //

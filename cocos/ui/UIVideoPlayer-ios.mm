@@ -22,9 +22,10 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "UIVideoPlayer.h"
+#include "ui/UIVideoPlayer.h"
 
-#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+// No Available on tvOS
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS && !defined(CC_TARGET_OS_TVOS)
 
 using namespace cocos2d::experimental::ui;
 //-------------------------------------------------------------------------------------
@@ -45,10 +46,12 @@ using namespace cocos2d::experimental::ui;
 - (void) resume;
 - (void) stop;
 - (void) seekTo:(float) sec;
+- (float) currentTime;
+- (float) duration;
 - (void) setVisible:(BOOL) visible;
-- (void) setKeepRatioEnabled:(bool) enabled;
-- (void) setFullScreenEnabled:(bool) enabled;
-- (bool) isFullScreenEnabled;
+- (void) setKeepRatioEnabled:(BOOL) enabled;
+- (void) setFullScreenEnabled:(BOOL) enabled;
+- (BOOL) isFullScreenEnabled;
 
 -(id) init:(void*) videoPlayer;
 
@@ -157,7 +160,7 @@ using namespace cocos2d::experimental::ui;
         self.moviePlayer.scalingMode = MPMovieScalingModeFill;
     }
 
-    auto view = cocos2d::Director::DirectorInstance->getOpenGLView();
+    auto view = cocos2d::Director::getInstance()->getOpenGLView();
     auto eaglview = (CCEAGLView *) view->getEAGLView();
     [eaglview addSubview:self.moviePlayer.view];
 
@@ -205,6 +208,22 @@ using namespace cocos2d::experimental::ui;
     if (self.moviePlayer != NULL) {
         [self.moviePlayer setCurrentPlaybackTime:(sec)];
     }
+}
+
+-(float) currentTime
+{
+    if (self.moviePlayer != NULL) {
+        return [self.moviePlayer currentPlaybackTime];
+    }
+    return -1;
+}
+
+-(float) duration
+{
+    if (self.moviePlayer != NULL) {
+        return [self.moviePlayer duration];
+    }
+    return -1;
 }
 
 -(void) setVisible:(BOOL)visible
@@ -281,7 +300,7 @@ VideoPlayer::~VideoPlayer()
 {
     if(_videoView)
     {
-        [((UIVideoViewWrapperIos*)_videoView) release];
+        [((UIVideoViewWrapperIos*)_videoView) dealloc];
     }
 }
 
@@ -305,7 +324,7 @@ void VideoPlayer::draw(Renderer* renderer, const Mat4 &transform, uint32_t flags
 
     if (flags & FLAGS_TRANSFORM_DIRTY)
     {
-        auto directorInstance = Director::DirectorInstance;
+        auto directorInstance = Director::getInstance();
         auto glView = directorInstance->getOpenGLView();
         auto frameSize = glView->getFrameSize();
         auto scaleFactor = [static_cast<CCEAGLView *>(glView->getEAGLView()) contentScaleFactor];
@@ -345,19 +364,6 @@ bool VideoPlayer::isFullScreenEnabled()const
 void VideoPlayer::setFullScreenEnabled(bool enabled)
 {
     [((UIVideoViewWrapperIos*)_videoView) setFullScreenEnabled:enabled];
-}
-
-void VideoPlayer::onEnter()
-{
-    Widget::onEnter();
-    if (isVisible())
-        [((UIVideoViewWrapperIos*)_videoView) setVisible:YES];
-}
-
-void VideoPlayer::onExit()
-{
-    Widget::onExit();
-    [((UIVideoViewWrapperIos*)_videoView) setVisible:NO];
 }
 
 void VideoPlayer::setKeepAspectRatioEnabled(bool enable)
@@ -409,6 +415,16 @@ void VideoPlayer::seekTo(float sec)
     }
 }
 
+float VideoPlayer::currentTime()const
+{
+    return [((UIVideoViewWrapperIos*)_videoView) currentTime];
+}
+
+float VideoPlayer::duration()const
+{
+    return [((UIVideoViewWrapperIos*)_videoView) duration];
+}
+
 bool VideoPlayer::isPlaying() const
 {
     return _isPlaying;
@@ -419,9 +435,28 @@ void VideoPlayer::setVisible(bool visible)
     cocos2d::ui::Widget::setVisible(visible);
 
     if (!visible)
+    {
         [((UIVideoViewWrapperIos*)_videoView) setVisible:NO];
+    }
     else if(isRunning())
+    {
         [((UIVideoViewWrapperIos*)_videoView) setVisible:YES];
+    }
+}
+
+void VideoPlayer::onEnter()
+{
+    Widget::onEnter();
+    if (isVisible())
+    {
+        [((UIVideoViewWrapperIos*)_videoView) setVisible: YES];
+    }
+}
+
+void VideoPlayer::onExit()
+{
+    Widget::onExit();
+    [((UIVideoViewWrapperIos*)_videoView) setVisible: NO];
 }
 
 void VideoPlayer::addEventListener(const VideoPlayer::ccVideoPlayerCallback& callback)
@@ -466,4 +501,3 @@ void VideoPlayer::copySpecialProperties(Widget *widget)
 }
 
 #endif
-

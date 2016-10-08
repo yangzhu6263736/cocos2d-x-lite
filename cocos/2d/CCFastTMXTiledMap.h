@@ -24,8 +24,8 @@ THE SOFTWARE.
 #ifndef __CC_FAST_TMX_TILEMAP_H__
 #define __CC_FAST_TMX_TILEMAP_H__
 
-#include "CCNode.h"
-#include "CCTMXObjectGroup.h"
+#include "2d/CCNode.h"
+#include "2d/CCTMXObjectGroup.h"
 
 NS_CC_BEGIN
 
@@ -173,17 +173,8 @@ public:
      *
      * @return Object groups.
      */
-    inline const Vector<TMXObjectGroup*>& getObjectGroups() const { return _objectGroups; };
-    inline Vector<TMXObjectGroup*>& getObjectGroups() { return _objectGroups; };
-
-    /** Set object groups.
-     *
-     * @param groups An object groups.
-     */
-    inline void setObjectGroups(const Vector<TMXObjectGroup*>& groups) {
-        _objectGroups = groups;
-    };
-
+    Vector<TMXObjectGroup*> getObjectGroups();
+    
     /** Get properties.
      *
      * @return Properties.
@@ -229,7 +220,6 @@ protected:
     /** map orientation */
     int _mapOrientation;
     /** object groups */
-    Vector<TMXObjectGroup*> _objectGroups;
     /** properties */
     ValueMap _properties;
 

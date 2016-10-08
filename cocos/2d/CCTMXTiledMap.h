@@ -245,16 +245,7 @@ public:
      *
      * @return The object groups.
      */
-    inline const Vector<TMXObjectGroup*>& getObjectGroups() const { return _objectGroups; };
-    inline Vector<TMXObjectGroup*>& getObjectGroups() { return _objectGroups; };
-    
-    /** Set the object groups. 
-     *
-     * @param groups The object groups.
-     */
-    inline void setObjectGroups(const Vector<TMXObjectGroup*>& groups) {
-        _objectGroups = groups;
-    };
+    Vector<TMXObjectGroup*> getObjectGroups();
     
     /** Properties. 
      *
@@ -306,8 +297,6 @@ protected:
     Size _tileSize;
     /** map orientation */
     int _mapOrientation;
-    /** object groups */
-    Vector<TMXObjectGroup*> _objectGroups;
     /** properties */
     ValueMap _properties;
     /*当前在内存中的分布地图索引*/
