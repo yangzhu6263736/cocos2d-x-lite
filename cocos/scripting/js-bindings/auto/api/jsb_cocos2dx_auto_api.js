@@ -83,14 +83,6 @@ getMaxS : function (
 },
 
 /**
- * @method releaseGLTexture
- */
-releaseGLTexture : function (
-)
-{
-},
-
-/**
  * @method hasPremultipliedAlpha
  * @return {bool}
  */
@@ -260,6 +252,14 @@ getContentSizeInPixels : function (
 )
 {
     return cc.Size;
+},
+
+/**
+ * @method releaseGLTexture
+ */
+releaseGLTexture : function (
+)
+{
 },
 
 /**
@@ -1560,6 +1560,18 @@ actionmanager
 getPosition : function(
 float,
 float 
+)
+{
+},
+
+/**
+ * @method insertChildBefore
+ * @param {cc.Node} arg0
+ * @param {cc.Node} arg1
+ */
+insertChildBefore : function (
+node, 
+node 
 )
 {
 },
