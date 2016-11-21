@@ -830,7 +830,7 @@ void GLViewImpl::onGLFWWindowSizeFunCallback(GLFWwindow *window, int width, int 
     {
         Size baseDesignSize = _designResolutionSize;
         ResolutionPolicy baseResolutionPolicy = _resolutionPolicy;
-        
+
         int frameWidth = width / _frameZoomFactor;
         int frameHeight = height / _frameZoomFactor;
         setFrameSize(frameWidth, frameHeight);

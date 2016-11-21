@@ -784,4 +784,3 @@ private:
 NS_CC_END
 
 #endif /*__COCOS2D_CCLABEL_H */
-
