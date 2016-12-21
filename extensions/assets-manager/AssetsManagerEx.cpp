@@ -563,20 +563,20 @@ void AssetsManagerEx::startUpdate()
     _percent = _percentByFile = _sizeCollected = _totalSize = 0;
     _downloadedSize.clear();
     _totalEnabled = false;
-    
+    //中断续传存在问题 会造成下载全部文件
     // Temporary manifest exists, resuming previous download
-    if (_tempManifest->isLoaded() && _tempManifest->versionEquals(_remoteManifest))
-    {
-        _tempManifest->genResumeAssetsList(&_downloadUnits);
-        _totalWaitToDownload = _totalToDownload = (int)_downloadUnits.size();
-        this->batchDownload();
+    // if (_tempManifest->isLoaded() && _tempManifest->versionEquals(_remoteManifest))
+    // {
+    //     _tempManifest->genResumeAssetsList(&_downloadUnits);
+    //     _totalWaitToDownload = _totalToDownload = (int)_downloadUnits.size();
+    //     this->batchDownload();
         
-        std::string msg = StringUtils::format("Resuming from previous unfinished update, %d files remains to be finished.", _totalToDownload);
-        dispatchUpdateEvent(EventAssetsManagerEx::EventCode::UPDATE_PROGRESSION, "", msg);
-    }
-    // Check difference
-    else
-    {
+    //     std::string msg = StringUtils::format("Resuming from previous unfinished update, %d files remains to be finished.", _totalToDownload);
+    //     dispatchUpdateEvent(EventAssetsManagerEx::EventCode::UPDATE_PROGRESSION, "", msg);
+    // }
+    // // Check difference
+    // else
+    // {
         // Temporary manifest not exists or out of date,
         // it will be used to register the download states of each asset,
         // in this case, it equals remote manifest.
@@ -630,7 +630,7 @@ void AssetsManagerEx::startUpdate()
             std::string msg = StringUtils::format("Start to update %d files from remote package.", _totalToDownload);
             dispatchUpdateEvent(EventAssetsManagerEx::EventCode::UPDATE_PROGRESSION, "", msg);
         }
-    }
+    // }
 
     _waitToUpdate = false;
 }
