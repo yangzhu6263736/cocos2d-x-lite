@@ -103,6 +103,7 @@ public:
     /** @brief Gets manifest version.
      */
     const std::string& getVersion() const;
+    int getVersionToInt() const;
     
     /** @brief Get the search paths list related to the Manifest.
      */
@@ -134,6 +135,7 @@ protected:
      * @param b   The other manifest
      */
     bool versionEquals(const Manifest *b) const;
+    bool versionBigThan(const Manifest *b) const;
     
     /** @brief Generate difference between this Manifest and another.
      * @param b   The other manifest

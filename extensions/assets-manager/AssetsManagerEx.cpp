@@ -469,7 +469,8 @@ void AssetsManagerEx::parseVersion()
     }
     else
     {
-        if (_localManifest->versionEquals(_remoteManifest))
+//        if (_localManifest->versionEquals(_remoteManifest))
+        if (_localManifest->versionBigThan(_remoteManifest))
         {
             _updateState = State::UP_TO_DATE;
             dispatchUpdateEvent(EventAssetsManagerEx::EventCode::ALREADY_UP_TO_DATE);

@@ -126,10 +126,43 @@ bool Manifest::isLoaded() const
     return _loaded;
 }
 
+
+std::vector<std::string> split(const  std::string& s, const std::string& delim)
+{
+    std::vector<std::string> elems;
+    size_t pos = 0;
+    size_t len = s.length();
+    size_t delim_len = delim.length();
+    if (delim_len == 0) return elems;
+    while (pos < len)
+    {
+        long find_pos = s.find(delim, pos);
+        if (find_pos < 0)
+        {
+            elems.push_back(s.substr(pos, len - pos));
+            break;
+        }
+        elems.push_back(s.substr(pos, find_pos - pos));
+        pos = find_pos + delim_len;
+    }
+    return elems;
+}
+
+bool Manifest::versionBigThan(const Manifest *b) const
+{
+    int _aVersionCode = this->getVersionToInt();
+    int _bVersionCode = b->getVersionToInt();
+    if (_aVersionCode >= _bVersionCode) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 bool Manifest::versionEquals(const Manifest *b) const
 {
     // Check manifest version
-    if (_version != b->getVersion())
+    if (_version < b->getVersion())
     {
         return false;
     }
@@ -284,6 +317,15 @@ const std::string& Manifest::getVersionFileUrl() const
 const std::string& Manifest::getVersion() const
 {
     return _version;
+}
+
+int Manifest::getVersionToInt() const
+{
+    std::vector<std::string> vers = split(_version, ".");
+    int a = std::atoi( vers[0].c_str());
+    int b = std::atoi( vers[1].c_str());
+    int c = std::atoi( vers[2].c_str());
+    return a * 10000 + b * 100 + c;
 }
 
 const std::vector<std::string>& Manifest::getGroups() const
