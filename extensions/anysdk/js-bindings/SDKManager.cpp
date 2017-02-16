@@ -38,10 +38,10 @@ void SDKManager::loadAllPlugins()
      * The oauthLoginServer parameter is the API address provided by the game service
      * to login verification
      */
-    std::string oauthLoginServer = "OAUTH_LOGIN_SERVER";
-    std::string appKey = "APP_KEY";
-    std::string appSecret = "APP_SERCRET";
-    std::string privateKey = "PRIVATE_KEY";
+    std::string oauthLoginServer = "http://c.ww.mmgame.net:8081/index.php/privateinterface/anySdkLoginCheck";
+    std::string appKey = "9911B089-7D96-4D4F-BD49-31E266CE44D1";
+    std::string appSecret = "87373f6344cd8ff4a302e0e713046cbd";
+    std::string privateKey = "20CB2F21202E9547EE4D5CAA7600480B";
     
     AgentManager* pAgent = AgentManager::getInstance();
     pAgent->init(appKey,appSecret,privateKey,oauthLoginServer);
