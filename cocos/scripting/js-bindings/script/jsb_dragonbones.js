@@ -20,19 +20,8 @@
  * THE SOFTWARE.
  */
 
-var proto = dragonBones.CCArmatureDisplay.prototype;
-
-proto.animation = proto.getAnimation;
-
-proto.addEvent = function(type, listener, target) {
-    this.addEventListener(type, function(event) {
-        listener.call(target, { type : event.type, detail: event });
-    });
-};
-
-proto.removeEvent = function(type) {
-    this.removeEventListener(type);
-};
+var _proto = dragonBones.CCArmatureDisplay.prototype;
+_proto.animation = _proto.getAnimation;
 
 var slotProto = dragonBones.Slot.prototype;
 cc.defineGetterSetter(slotProto, 'childArmature', slotProto.getChildArmature, slotProto.setChildArmature);
@@ -42,20 +31,11 @@ cc.defineGetterSetter(armatureProto, 'animation', armatureProto.getAnimation, nu
 cc.defineGetterSetter(armatureProto, 'display', armatureProto.getDisplay, null);
 cc.defineGetterSetter(armatureProto, 'name', armatureProto.getName, null);
 
-armatureProto.addEventListener = function (type, listener, target) {
-    var display = this.display;
-    jsb.registerNativeRef(this, display);
-    display.addEvent(type, listener, target);
-};
-
-armatureProto.removeEventListener = function (type) {
-    var display = this.display;
-    jsb.unregisterNativeRef(this, display);
-    display.removeEvent(type);
-};
-
 var animationStateProto = dragonBones.AnimationState.prototype;
 cc.defineGetterSetter(animationStateProto, 'name', animationStateProto.getName);
+
+var slotProto = dragonBones.Slot.prototype;
+cc.defineGetterSetter(slotProto, 'display', slotProto.getDisplay);
 
 dragonBones.EventObject.START = "start";
 dragonBones.EventObject.LOOP_COMPLETE = "loopComplete";

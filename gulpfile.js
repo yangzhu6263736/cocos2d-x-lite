@@ -106,7 +106,7 @@ gulp.task('gen-libs', function(cb) {
   else {
     cocosConsoleBin = Path.join(cocosConsoleRoot, 'cocos.bat');
   }
-  execSync(cocosConsoleBin + ' gen-libs -m release', '.');
+  execSync(cocosConsoleBin + ' gen-libs -m release --app-abi armeabi:arm64-v8a:armeabi-v7a:x86', '.');
   cb();
 });
 
@@ -142,9 +142,9 @@ gulp.task('gen-simulator', function (cb) {
     child.on('close', (code) => {
       if (code !== 0) {
         console.error('Generate simulator failed');
-        cb();
-        return;
       }
+      cb();
+      return;
     });
     child.on('error', function () {
       console.error('Generate simulator failed');

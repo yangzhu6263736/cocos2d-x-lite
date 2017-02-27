@@ -502,6 +502,16 @@ str
 },
 
 /**
+ * @method _bufferAction
+ * @param {dragonBones::ActionData} arg0
+ */
+_bufferAction : function (
+actiondata 
+)
+{
+},
+
+/**
  * @method getCacheFrameRate
  * @return {unsigned int}
  */
@@ -684,29 +694,23 @@ Armature : function (
 dragonBones.Animation = {
 
 /**
- * @method getIsCompleted
+ * @method isPlaying
  * @return {bool}
  */
-getIsCompleted : function (
+isPlaying : function (
 )
 {
     return false;
 },
 
 /**
- * @method gotoAndPlayByTime
- * @param {String} arg0
- * @param {float} arg1
- * @param {int} arg2
- * @return {dragonBones::AnimationState}
+ * @method getAnimationNames
+ * @return {Array}
  */
-gotoAndPlayByTime : function (
-str, 
-float, 
-int 
+getAnimationNames : function (
 )
 {
-    return dragonBones::AnimationState;
+    return new Array();
 },
 
 /**
@@ -737,6 +741,16 @@ bool
 )
 {
     return dragonBones::AnimationState;
+},
+
+/**
+ * @method isCompleted
+ * @return {bool}
+ */
+isCompleted : function (
+)
+{
+    return false;
 },
 
 /**
@@ -800,13 +814,19 @@ getLastAnimationState : function (
 },
 
 /**
- * @method getAnimationNames
- * @return {Array}
+ * @method gotoAndPlayByTime
+ * @param {String} arg0
+ * @param {float} arg1
+ * @param {int} arg2
+ * @return {dragonBones::AnimationState}
  */
-getAnimationNames : function (
+gotoAndPlayByTime : function (
+str, 
+float, 
+int 
 )
 {
-    return new Array();
+    return dragonBones::AnimationState;
 },
 
 /**
@@ -879,16 +899,6 @@ int
 )
 {
     return dragonBones::AnimationState;
-},
-
-/**
- * @method getIsPlaying
- * @return {bool}
- */
-getIsPlaying : function (
-)
-{
-    return false;
 },
 
 /**
@@ -1075,16 +1085,6 @@ Bone : function (
 dragonBones.Slot = {
 
 /**
- * @method getRawDisplay
- * @return {void}
- */
-getRawDisplay : function (
-)
-{
-    return void;
-},
-
-/**
  * @method getChildArmature
  * @return {dragonBones::Armature}
  */
@@ -1092,38 +1092,6 @@ getChildArmature : function (
 )
 {
     return dragonBones::Armature;
-},
-
-/**
- * @method getDisplay
- * @return {void}
- */
-getDisplay : function (
-)
-{
-    return void;
-},
-
-/**
- * @method getMeshDisplay
- * @return {void}
- */
-getMeshDisplay : function (
-)
-{
-    return void;
-},
-
-/**
- * @method setDisplay
- * @param {void} arg0
- * @param {dragonBones::DisplayType} arg1
- */
-setDisplay : function (
-void, 
-displaytype 
-)
-{
 },
 
 /**
@@ -1367,16 +1335,6 @@ getCurrentPlayTimes : function (
 },
 
 /**
- * @method getIsCompleted
- * @return {bool}
- */
-getIsCompleted : function (
-)
-{
-    return false;
-},
-
-/**
  * @method getName
  * @return {String}
  */
@@ -1425,6 +1383,16 @@ getLayer : function (
 },
 
 /**
+ * @method isCompleted
+ * @return {bool}
+ */
+isCompleted : function (
+)
+{
+    return false;
+},
+
+/**
  * @method play
  */
 play : function (
@@ -1453,6 +1421,16 @@ stop : function (
 },
 
 /**
+ * @method isPlaying
+ * @return {bool}
+ */
+isPlaying : function (
+)
+{
+    return false;
+},
+
+/**
  * @method addBoneMask
  * @param {String} arg0
  * @param {bool} arg1
@@ -1471,16 +1449,6 @@ bool
  */
 containsBoneMask : function (
 str 
-)
-{
-    return false;
-},
-
-/**
- * @method getIsPlaying
- * @return {bool}
- */
-getIsPlaying : function (
 )
 {
     return false;
@@ -1585,6 +1553,42 @@ str
 },
 
 /**
+ * @method dispose
+ */
+dispose : function (
+)
+{
+},
+
+/**
+ * @method hasEventCallback
+ * @return {bool}
+ */
+hasEventCallback : function (
+)
+{
+    return false;
+},
+
+/**
+ * @method setEventCallback
+ * @param {function} arg0
+ */
+setEventCallback : function (
+func 
+)
+{
+},
+
+/**
+ * @method clearEventCallback
+ */
+clearEventCallback : function (
+)
+{
+},
+
+/**
  * @method addEvent
  * @param {String} arg0
  * @param {function} arg1
@@ -1631,6 +1635,23 @@ create : function (
 };
 
 /**
+ * @class DBCCSprite
+ */
+dragonBones.DBCCSprite = {
+
+/**
+ * @method create
+ * @return {dragonBones::DBCCSprite}
+ */
+create : function (
+)
+{
+    return dragonBones::DBCCSprite;
+},
+
+};
+
+/**
  * @class CCSlot
  */
 dragonBones.CCSlot = {
@@ -1670,6 +1691,30 @@ CCSlot : function (
  * @class CCFactory
  */
 dragonBones.CCFactory = {
+
+/**
+ * @method getTextureDisplay
+ * @param {String} arg0
+ * @param {String} arg1
+ * @return {cc.Sprite}
+ */
+getTextureDisplay : function (
+str, 
+str 
+)
+{
+    return cc.Sprite;
+},
+
+/**
+ * @method getSoundEventManater
+ * @return {dragonBones::CCArmatureDisplay}
+ */
+getSoundEventManater : function (
+)
+{
+    return dragonBones::CCArmatureDisplay;
+},
 
 /**
  * @method buildArmatureDisplay

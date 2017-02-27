@@ -857,6 +857,11 @@ void EventDispatcher::dispatchCustomEvent(const std::string &eventName, void *op
     dispatchEvent(&ev);
 }
 
+bool EventDispatcher::hasEventListener(const EventListener::ListenerID& listenerID) const
+{
+    return getListeners(listenerID) != nullptr;
+}
+
 void EventDispatcher::dispatchTouchEvent(EventTouch* event)
 {
     sortEventListeners(EventListenerTouchOneByOne::LISTENER_ID);
@@ -1286,7 +1291,7 @@ void EventDispatcher::sortEventListenersOfFixedPriority(const EventListener::Lis
 
 }
 
-EventDispatcher::EventListenerVector* EventDispatcher::getListeners(const EventListener::ListenerID& listenerID)
+EventDispatcher::EventListenerVector* EventDispatcher::getListeners(const EventListener::ListenerID& listenerID) const
 {
     auto iter = _listenerMap.find(listenerID);
     if (iter != _listenerMap.end())

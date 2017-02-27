@@ -28,21 +28,23 @@ private:
 
 public:
     /** @private */
-    void _onClear() override;
+    virtual void _onClear() override;
     /** @private */
-    void _dispatchEvent(EventObject* value) override;
+    virtual void _dispatchEvent(EventObject* value) override;
     /** @private */
-    void update(float passedTime) override;
+    virtual void dispose() override;
+    /** @private */
+    virtual void update(float passedTime) override;
 
 public:
-    void advanceTimeBySelf(bool on) override;
+    virtual void advanceTimeBySelf(bool on) override;
     
     void addEvent(const std::string& type, const std::function<void(EventObject*)>& callback);
     void removeEvent(const std::string& type);
 
     inline bool hasEvent(const std::string& type) const override
     {
-        return _dispatcher->isEnabled();
+        return _eventCallback || _dispatcher->isEnabled();
     }
 
     inline Armature* getArmature() const override 
@@ -54,6 +56,18 @@ public:
     {
         return _armature->getAnimation();
     }
+
+CC_CONSTRUCTOR_ACCESS:
+    // methods added for js bindings
+    void setEventCallback(const std::function<void(EventObject*)>& callback) {
+        this->_eventCallback = callback;
+    }
+    inline bool hasEventCallback() { return this->_eventCallback ? true : false; }
+    inline void clearEventCallback() { this->_eventCallback = nullptr; }
+
+private:
+    // added for js bindings
+    std::function<void(EventObject*)> _eventCallback;
 };
 
 /** @private */

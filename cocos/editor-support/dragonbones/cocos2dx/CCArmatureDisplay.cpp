@@ -20,15 +20,19 @@ CCArmatureDisplay* CCArmatureDisplay::create()
 
 CCArmatureDisplay::CCArmatureDisplay() :
     _armature(nullptr),
-    _dispatcher(nullptr)
+    _dispatcher(nullptr),
+    _eventCallback(nullptr)
 {
     _dispatcher = new cocos2d::EventDispatcher();
+    this->setEventDispatcher(_dispatcher);
     _dispatcher->setEnabled(true);
 }
 CCArmatureDisplay::~CCArmatureDisplay() {}
 
 void CCArmatureDisplay::_onClear()
 {
+    this->setEventDispatcher(cocos2d::Director::getInstance()->getEventDispatcher());
+
     _armature = nullptr;
     CC_SAFE_RELEASE(_dispatcher);
     this->release();
@@ -36,7 +40,23 @@ void CCArmatureDisplay::_onClear()
 
 void CCArmatureDisplay::_dispatchEvent(EventObject* value)
 {
-    _dispatcher->dispatchCustomEvent(value->type, value);
+    if (_eventCallback) {
+        _eventCallback(value);
+    }
+    
+    if (_dispatcher->isEnabled()) {
+        _dispatcher->dispatchCustomEvent(value->type, value);
+    }
+}
+
+void CCArmatureDisplay::dispose()
+{
+    if (_armature) 
+    {
+        advanceTimeBySelf(false);
+        _armature->dispose();
+        _armature = nullptr;
+    }
 }
 
 void CCArmatureDisplay::update(float passedTime)
