@@ -561,7 +561,7 @@ bool ParticleSystem::initWithTotalParticles(int numberOfParticles)
     _blendFunc = BlendFunc::ALPHA_PREMULTIPLIED;
 
     // default movement type;
-    _positionType = PositionType::FREE;
+    _positionType = PositionType::RELATIVE;//edit by yangzhu
 
     // by default be in mode A:
     _emitterMode = Mode::GRAVITY;
