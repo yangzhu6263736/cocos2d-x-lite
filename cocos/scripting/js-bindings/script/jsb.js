@@ -51,5 +51,9 @@ require('script/jsb_opengl.js');
 if (window.sp) {
     require('script/jsb_spine.js');
 }
+require("script/jsb_dragonbones.js");
 
 require("script/jsb_audioengine.js");
+// require('script/jsb_loaders.js');
+// require('script/jsb_pool.js');
+// require('script/jsb_deprecated.js');

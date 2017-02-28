@@ -764,16 +764,16 @@ void WebSocket::onClientWritable()
         // Safely done!
         else
         {
-            LOGD("Safely done, msg(%d)!\n", subThreadMsg->id);
+//            LOGD("Safely done, msg(%d)!\n", subThreadMsg->id);
             if (remaining == frame->getFrameLength())
             {
-                LOGD("msg(%u) append: %d + %d = %d\n", subThreadMsg->id, (int)data->issued, (int)frame->getFrameLength(), (int)(data->issued + frame->getFrameLength()));
-                LOGD("msg(%u) was totally sent!\n", subThreadMsg->id);
+//                LOGD("msg(%u) append: %d + %d = %d\n", subThreadMsg->id, (int)data->issued, (int)frame->getFrameLength(), (int)(data->issued + frame->getFrameLength()));
+//                LOGD("msg(%u) was totally sent!\n", subThreadMsg->id);
             }
             else
             {
-                LOGD("ERROR: msg(%u), remaining(%d) < bytesWrite(%d)\n", subThreadMsg->id, (int)remaining, (int)frame->getFrameLength());
-                LOGD("Drop the msg(%u)\n", subThreadMsg->id);
+//                LOGD("ERROR: msg(%u), remaining(%d) < bytesWrite(%d)\n", subThreadMsg->id, (int)remaining, (int)frame->getFrameLength());
+//                LOGD("Drop the msg(%u)\n", subThreadMsg->id);
                 closeAsync();
             }
 
@@ -784,7 +784,7 @@ void WebSocket::onClientWritable()
             _wsHelper->_subThreadWsMessageQueue->erase(iter);
             CC_SAFE_DELETE(subThreadMsg);
 
-            LOGD("-----------------------------------------------------------\n");
+//            LOGD("-----------------------------------------------------------\n");
         }
     }
 }
@@ -796,7 +796,7 @@ void WebSocket::onClientReceivedData(void* in, ssize_t len)
     packageIndex++;
     if (in != nullptr && len > 0)
     {
-        LOGD("Receiving data:index:%d, len=%d\n", packageIndex, (int)len);
+//        LOGD("Receiving data:index:%d, len=%d\n", packageIndex, (int)len);
 
         unsigned char* inData = (unsigned char*)in;
         _receivedData.insert(_receivedData.end(), inData, inData + len);
@@ -830,7 +830,7 @@ void WebSocket::onClientReceivedData(void* in, ssize_t len)
         std::shared_ptr<std::atomic<bool>> isDestroyed = _isDestroyed;
         _wsHelper->sendMessageToCocosThread([this, frameData, frameSize, isBinary, isDestroyed](){
             // In UI thread
-            LOGD("Notify data len %d to Cocos thread.\n", (int)frameSize);
+//            LOGD("Notify data len %d to Cocos thread.\n", (int)frameSize);
 
             Data data;
             data.isBinary = isBinary;
