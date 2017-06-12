@@ -26,7 +26,7 @@ THE SOFTWARE.
 ****************************************************************************/
 
 #include "renderer/CCTextureCache.h"
-#include <regex>
+
 #include <errno.h>
 #include <stack>
 #include <cctype>
@@ -71,34 +71,6 @@ TextureCache::~TextureCache()
     CC_SAFE_DELETE(_loadingThread);
 }
 
-void StringReplace(string &strBase, string strSrc, string strDes)
-{
-    string::size_type pos = 0;
-    string::size_type srcLen = strSrc.size();
-    string::size_type desLen = strDes.size();
-    pos=strBase.find(strSrc, pos);
-    while ((pos != string::npos))
-    {
-        strBase.replace(pos, srcLen, strDes);
-        pos=strBase.find(strSrc, (pos+desLen));
-    }
-}
-void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c)
-{
-    std::string::size_type pos1, pos2;
-    pos2 = s.find(c);
-    pos1 = 0;
-    while(std::string::npos != pos2)
-    {
-        v.push_back(s.substr(pos1, pos2-pos1));
-        
-        pos1 = pos2 + c.size();
-        pos2 = s.find(c, pos1);
-    }
-    if(pos1 != s.length())
-        v.push_back(s.substr(pos1));
-}
-
 void TextureCache::destroyInstance()
 {
 }
@@ -119,38 +91,6 @@ public:
     Image imageAlpha;
     Texture2D::PixelFormat pixelFormat;
     bool loadSuccess;
-};
-
-std::string getCacheKey(std::string filename)
-{
-    std::string _filename = filename;
-    if (filename.find("Resources") != string::npos) {
-        std::vector<std::string> fileArr;
-        SplitString(filename, fileArr, "Resources/");
-        _filename = fileArr[1];
-    }
-    if (filename.find("blackjack-remote-asset/") != string::npos) {
-        std::vector<std::string> fileArr;
-        SplitString(filename, fileArr, "blackjack-remote-asset/");
-        _filename = fileArr[1];
-    }
-    if (filename == "") return filename;
-
-//    std::regex rx("-2017(.+).png");
-    string::size_type nPos0 = _filename.find("-3736");
-    if(nPos0 != string::npos) {
-        std::string _sign = _filename.substr(nPos0, 11);
-        StringReplace(_filename, _sign, "");
-    }
-//    std::regex rx("-3736.+).png");
-//    std::string fmt(".png");
-//    std::string out;
-//    out = std::regex_replace(_filename, rx, fmt);
-//    CCLOG("getCacheKey filename:%s %s", _filename.c_str(), out.c_str());
-
-    // return _filename;
-//    StringReplace(_filename, "-20170601010101.png", ".png");
-    return _filename;
 };
 
 /**
@@ -182,10 +122,10 @@ std::string getCacheKey(std::string filename)
 void TextureCache::addImageAsync(const std::string &path, const std::function<void(Texture2D*)>& callback)
 {
     Texture2D *texture = nullptr;
-    std::string keyname = getCacheKey(path);
+
     std::string fullpath = FileUtils::getInstance()->fullPathForFilename(path);
 
-    auto it = _textures.find(keyname);
+    auto it = _textures.find(fullpath);
     if( it != _textures.end() )
         texture = it->second;
 
@@ -292,7 +232,6 @@ void TextureCache::loadImage()
     }
 }
 
-
 void TextureCache::addImageAsyncCallBack(float dt)
 {
     Texture2D *texture = nullptr;
@@ -321,8 +260,7 @@ void TextureCache::addImageAsyncCallBack(float dt)
         }
 
         // check the image has been convert to texture or not
-        std::string cachekey = getCacheKey(asyncStruct->filename);
-        auto it = _textures.find(cachekey);
+        auto it = _textures.find(asyncStruct->filename);
         if(it != _textures.end())
         {
             texture = it->second;
@@ -332,17 +270,10 @@ void TextureCache::addImageAsyncCallBack(float dt)
             // convert image to texture
             if (asyncStruct->loadSuccess)
             {
-                std::vector<std::string> fileArr;
-//                SplitString(asyncStruct->filename, fileArr, "Resources/");
-//                std::string _filename = fileArr[1];
-//                StringReplace(_filename, "-20170601010101.png", ".png");
-//                asyncStruct->filename = _filename;
-//                CCLOG("addImageAsyncCallBack:%s", _filename.c_str());
-
-//                asyncStruct->filename.replace("-20170601010101", "", <#const std::basic_string<char> &__str#>)
                 Image* image = &(asyncStruct->image);
                 // generate texture in render thread
                 texture = new (std::nothrow) Texture2D();
+
                 texture->initWithImage(image, asyncStruct->pixelFormat);
                 //parse 9-patch info
                 this->parseNinePatchImage(image, texture, asyncStruct->filename);
@@ -351,7 +282,7 @@ void TextureCache::addImageAsyncCallBack(float dt)
                 VolatileTextureMgr::addImageTexture(texture, asyncStruct->filename);
 #endif
                 // cache the texture. retain it, since it is added in the map
-                _textures.insert( std::make_pair(cachekey, texture) );
+                _textures.insert( std::make_pair(asyncStruct->filename, texture) );
                 texture->retain();
 
                 texture->autorelease();
@@ -391,8 +322,7 @@ Texture2D * TextureCache::addImage(const std::string &path)
     {
         return nullptr;
     }
-    std::string _keyName = getCacheKey(fullpath);
-    auto it = _textures.find(_keyName);
+    auto it = _textures.find(fullpath);
     if( it != _textures.end() )
         texture = it->second;
 
@@ -416,7 +346,7 @@ Texture2D * TextureCache::addImage(const std::string &path)
                 VolatileTextureMgr::addImageTexture(texture, fullpath);
 #endif
                 // texture already retained, no need to re-retain it
-                _textures.insert( std::make_pair(_keyName, texture) );
+                _textures.insert( std::make_pair(fullpath, texture) );
 
                 //parse 9-patch info
                 this->parseNinePatchImage(image, texture, path);
@@ -583,8 +513,6 @@ void TextureCache::removeTexture(Texture2D* texture)
 
 void TextureCache::removeTextureForKey(const std::string &textureKeyName)
 {
-    CCLOG("c++:removeTextureForKey:%s", textureKeyName.c_str());
-
     std::string key = textureKeyName;
     auto it = _textures.find(key);
 
@@ -602,21 +530,15 @@ void TextureCache::removeTextureForKey(const std::string &textureKeyName)
 Texture2D* TextureCache::getTextureForKey(const std::string &textureKeyName) const
 {
     std::string key = textureKeyName;
-    key = getCacheKey(key);
-    CCLOG("getTextureForKey:%s", key.c_str());
-    
     auto it = _textures.find(key);
 
-//    if( it == _textures.end() ) {
-//        key = FileUtils::getInstance()->fullPathForFilename(textureKeyName);
-//
-//        if (key.empty()) {
-//            return nullptr;
-//        }
-//        StringReplace(key, "-20170601010101.png", ".png");
-//
-//        it = _textures.find(key);
-//    }
+    if( it == _textures.end() ) {
+        key = FileUtils::getInstance()->fullPathForFilename(textureKeyName);
+        if (key.empty()) {
+            return nullptr;
+        }
+        it = _textures.find(key);
+    }
 
     if( it != _textures.end() )
         return it->second;
